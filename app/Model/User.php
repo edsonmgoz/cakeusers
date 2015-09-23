@@ -47,7 +47,7 @@ class User extends AppModel {
 				//'allowEmpty' => false,
 				//'required' => false,
 				//'last' => false, // Stop validation after this rule
-				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+				'on' => 'create', // Limit validation to 'create' or 'update' operations
 			),
 		),
 		'role' => array(
@@ -64,8 +64,27 @@ class User extends AppModel {
 
 	public function beforeSave($options = array())
 	{
-		if(isset($this->data[$this->alias]['password']))
+		// Si existe un id de 'User' significa que estamos editando el registro.
+		if(!empty($this->data[$this->alias]['id']))
 		{
+			// Si el password de 'User' es enviado como vacio, significa que no se está modificando.
+			if(empty($this->data[$this->alias]['password']))
+			{
+				// Recuperamos el password actual de 'User'
+		        $pass = $this->find('first', ['conditions' => ['id' => $this->data[$this->alias]['id']]]);
+		        $this->data[$this->alias]['password'] = $pass['User']['password'];
+			}
+			else
+			{
+				// De no ser asi encriptamos el nuevo password de 'User'
+				$passwordHasher = new BlowfishPasswordHasher();
+				$this->data[$this->alias]['password'] = $passwordHasher->hash($this->data[$this->alias]['password']);
+				
+			}
+		}
+		elseif(isset($this->data[$this->alias]['password']))
+		{
+			// De no ser asi estamos creando un nuevo 'User', entonces encriptamos el password
 			$passwordHasher = new BlowfishPasswordHasher();
 			$this->data[$this->alias]['password'] = $passwordHasher->hash($this->data[$this->alias]['password']);
 		}

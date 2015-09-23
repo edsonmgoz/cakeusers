@@ -6,7 +6,7 @@
 		echo $this->Form->input('id');
 		echo $this->Form->input('fullname');
 		echo $this->Form->input('username');
-		// echo $this->Form->input('password');
+		echo $this->Form->input('password', array('required' => false, 'value' => ''));
 		echo $this->Form->input('role', array('type' => 'select', 'options' => array('admin' => 'Administrador', 'user' => 'Usuario'), array('class' => 'form-control')));
 	?>
 	</fieldset>

@@ -59,9 +59,10 @@ class AppController extends Controller {
         $this->set('current_user', $this->Auth->user());
     }
     
+    // Damos acceso a la aplicación tanto a usuarios de tipo 'admin' como 'user'
     public function isAuthorized($user)
     {
-        if(isset($user['role']) && $user['role'] === 'admin')
+        if(isset($user['role']) && ( $user['role'] === 'admin' ||  $user['role'] === 'user'))
         {
             return true;
         }
